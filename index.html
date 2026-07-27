@@ -11,26 +11,67 @@
         .card { background: white; padding: 30px; border-radius: 10px; display: inline-block; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .btn { background-color: #27ae60; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; margin-top: 15px; }
         .btn:hover { background-color: #219653; }
-        .counter { font-size: 24px; font-weight: bold; color: #2c3e50; margin-top: 10px; }
+        .counter { font-size: 32px; font-weight: bold; color: #e67e22; margin-top: 10px; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>🚀 Welcome to My Cloud Journey</h1>
-        <p>Hi, I am Eshwari! This portfolio is hosted on global cloud servers.</p>
+        <p>Hi, I am Eshwari! This site connects directly to a live cloud database.</p>
         
-        <!-- Interactive Section -->
-        <button class="btn" onclick="updateCounter()">Click to Track Visit</button>
-        <div class="counter" id="countLabel">0</div>
-        <p style="font-size:14px; color:gray;">(This tracks clicks locally on your browser session!)</p>
+        <!-- Interactive Cloud Counter Section -->
+        <button class="btn" onclick="addClick()">Click to Update Cloud Table</button>
+        <div class="counter" id="countLabel">Loading...</div>
+        <p style="font-size:14px; color:gray;">(This number updates directly inside your Supabase Database!)</p>
     </div>
 
     <script>
-        let count = 0;
-        function updateCounter() {
-            count++;
-            document.getElementById("countLabel").innerText = count;
+        // ⚠️ PASTE YOUR CODES HERE:
+        const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+        const SUPABASE_KEY = "YOUR_SUPABASE_ANON_PUBLIC_KEY";
+
+        // This function fetches the current value from your database when the page opens
+        async function fetchCounter() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/site_stats?select=clicks`, {
+                    headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+                });
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    document.getElementById("countLabel").innerText = data[0].clicks;
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
         }
+
+        // This function adds +1 to the database when the button is clicked
+        async function addClick() {
+            let currentLabel = document.getElementById("countLabel").innerText;
+            let currentCount = parseInt(currentLabel) || 0;
+            let newCount = currentCount + 1;
+
+            // Optimistically update the screen immediately
+            document.getElementById("countLabel").innerText = newCount;
+
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/site_stats?clicks=eq.${currentCount}`, {
+                    method: "PATCH",
+                    headers: { 
+                        "apikey": SUPABASE_KEY, 
+                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Content-Type": "application/json",
+                        "Prefer": "return=minimal"
+                    },
+                    body: JSON.stringify({ clicks: newCount })
+                });
+            } catch (error) {
+                console.error("Error updating cloud database:", error);
+            }
+        }
+
+        // Load the count automatically when the browser opens
+        fetchCounter();
     </script>
 </body>
 </html>
