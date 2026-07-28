@@ -15,7 +15,7 @@
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); line-height: 1.6; margin: 0; padding: 40px 20px; }
         .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: left; }
         
-        .header { text-align: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 20px; margin-bottom: 30px; }
+        .header { text-align: center; border-bottom: 2px solid #ecf0f1; padding-bottom: 20px; margin-bottom: 25px; }
         h1 { color: var(--primary); margin: 0 0 10px 0; font-size: 32px; }
         .subtitle { font-size: 18px; color: var(--secondary); font-weight: 600; margin: 0 0 15px 0; }
         .links { font-size: 14px; }
@@ -42,6 +42,7 @@
 <body>
 
 <div class="container">
+    <!-- Header Section -->
     <div class="header">
         <h1>Eshwari Deokule</h1>
         <div class="subtitle">Aspiring Cloud & Software Engineer</div>
@@ -50,13 +51,23 @@
         </div>
     </div>
 
-    <div class="cloud-widget">
+    <!-- About Me Section -->
+    <div class="section" style="border-bottom: 2px solid #ecf0f1; padding-bottom: 25px;">
+        <div class="section-title">About Me</div>
+        <p style="font-size: 15px; text-align: justify; margin: 0; color: #34495e;">
+            Motivated and proactive incoming engineering student with a strong foundational passion for cloud architecture, automation, and full-stack development. Demonstrated capability in building serverless web environments, configuring cloud databases, and establishing Git-driven CI/CD deployment pipelines prior to formal academic studies. Enthusiastic about leveraging analytical and technological frameworks to architect scalable software systems.
+        </p>
+    </div>
+
+    <!-- Live Cloud Counter Feature -->
+    <div class="cloud-widget" style="margin-top: 30px;">
         <p style="margin: 0 0 10px 0; font-weight: bold; color: var(--primary);">⚡ Live Portfolio Infrastructure Check</p>
         <button class="btn" onclick="addClick()">Test Cloud Data Pipeline</button>
         <div class="counter" id="countLabel">Loading...</div>
         <p style="font-size: 12px; color: #7f8c8d; margin: 5px 0 0 0;">This interaction updates a live external Supabase Cloud Database via REST API architecture.</p>
     </div>
 
+    <!-- Education Section -->
     <div class="section">
         <div class="section-title">Education</div>
         <div class="edu-item">
@@ -65,6 +76,7 @@
         </div>
     </div>
 
+    <!-- Core Skills Section -->
     <div class="section">
         <div class="section-title">Technical Skills</div>
         <div class="skills-grid">
@@ -79,6 +91,7 @@
         </div>
     </div>
 
+    <!-- Technical Projects Section -->
     <div class="section">
         <div class="section-title">Key Projects</div>
         <div class="project-item">
