@@ -26,7 +26,7 @@
     </div>
 
     <script>
-        // ⚠️ PASTE YOUR CODES HERE:
+        // ⚠️ REPLACE THE TEXT INSIDE THE QUOTES WITH YOUR ACTUAL KEYS FROM SUPABASE:
         const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
         const SUPABASE_KEY = "YOUR_SUPABASE_ANON_PUBLIC_KEY";
 
@@ -34,24 +34,32 @@
         async function fetchCounter() {
             try {
                 const response = await fetch(`${SUPABASE_URL}/rest/v1/site_stats?select=clicks`, {
-                    headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+                    headers: { 
+                        "apikey": SUPABASE_KEY, 
+                        "Authorization": `Bearer ${SUPABASE_KEY}` 
+                    }
                 });
                 const data = await response.json();
-                if (data && data.length > 0) {
+                
+                // Safety check: if database has a row, read it. Otherwise default to 1.
+                if (data && data.length > 0 && data[0].clicks !== undefined) {
                     document.getElementById("countLabel").innerText = data[0].clicks;
+                } else {
+                    document.getElementById("countLabel").innerText = "1";
                 }
             } catch (error) {
                 console.error("Error fetching data:", error);
+                document.getElementById("countLabel").innerText = "1"; // Fallback to 1 if connection drops
             }
         }
 
         // This function adds +1 to the database when the button is clicked
         async function addClick() {
             let currentLabel = document.getElementById("countLabel").innerText;
-            let currentCount = parseInt(currentLabel) || 0;
+            let currentCount = parseInt(currentLabel) || 1;
             let newCount = currentCount + 1;
 
-            // Optimistically update the screen immediately
+            // Instantly update the browser screen for smooth clicking
             document.getElementById("countLabel").innerText = newCount;
 
             try {
@@ -70,9 +78,9 @@
             }
         }
 
-        // Load the count automatically when the browser opens
+        // Run the function to fetch data as soon as the file loads
         fetchCounter();
     </script>
 </body>
 </html>
- 
+
