@@ -26,64 +26,53 @@
     </div>
 
     <script>
-       // ⚠️ KEEP YOUR CODES PASTED HERE:
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-const SUPABASE_KEY = "YOUR_SUPABASE_ANON_PUBLIC_KEY";
+        // ⚠️ PASTE YOUR CODES HERE:
+        const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+        const SUPABASE_KEY = "YOUR_SUPABASE_ANON_PUBLIC_KEY";
 
-// Universal counter tracking variable
-let globalCount = 1;
-
-// This function fetches the current value from your database when the page opens
-async function fetchCounter() {
-    try {
-        const response = await fetch(`${SUPABASE_URL}/rest/v1/site_stats?select=clicks`, {
-            headers: { 
-                "apikey": SUPABASE_KEY, 
-                "Authorization": `Bearer ${SUPABASE_KEY}` 
+        // This function fetches the current value from your database when the page opens
+        async function fetchCounter() {
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/site_stats?select=clicks`, {
+                    headers: { "apikey": SUPABASE_KEY, "Authorization": `Bearer ${SUPABASE_KEY}` }
+                });
+                const data = await response.json();
+                if (data && data.length > 0) {
+                    document.getElementById("countLabel").innerText = data[0].clicks;
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
             }
-        });
-        const data = await response.json();
-        
-        // If data exists, grab the value of the very first row
-        if (data && data.length > 0) {
-            globalCount = data[0].clicks;
-            document.getElementById("countLabel").innerText = globalCount;
-        } else {
-            document.getElementById("countLabel").innerText = "1";
         }
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        document.getElementById("countLabel").innerText = "Error";
-    }
-}
 
-// This function adds +1 to the database when the button is clicked
-async function addClick() {
-    globalCount = globalCount + 1;
+        // This function adds +1 to the database when the button is clicked
+        async function addClick() {
+            let currentLabel = document.getElementById("countLabel").innerText;
+            let currentCount = parseInt(currentLabel) || 0;
+            let newCount = currentCount + 1;
 
-    // Change the number on your browser screen immediately
-    document.getElementById("countLabel").innerText = globalCount;
+            // Optimistically update the screen immediately
+            document.getElementById("countLabel").innerText = newCount;
 
-    try {
-        // This updates row 1 in your database to the new count value
-        await fetch(`${SUPABASE_URL}/rest/v1/site_stats`, {
-            method: "PATCH",
-            headers: { 
-                "apikey": SUPABASE_KEY, 
-                "Authorization": `Bearer ${SUPABASE_KEY}`,
-                "Content-Type": "application/json",
-                "Prefer": "return=minimal"
-            },
-            body: JSON.stringify({ clicks: globalCount })
-        });
-    } catch (error) {
-        console.error("Error updating cloud database:", error);
-    }
-}
+            try {
+                await fetch(`${SUPABASE_URL}/rest/v1/site_stats?clicks=eq.${currentCount}`, {
+                    method: "PATCH",
+                    headers: { 
+                        "apikey": SUPABASE_KEY, 
+                        "Authorization": `Bearer ${SUPABASE_KEY}`,
+                        "Content-Type": "application/json",
+                        "Prefer": "return=minimal"
+                    },
+                    body: JSON.stringify({ clicks: newCount })
+                });
+            } catch (error) {
+                console.error("Error updating cloud database:", error);
+            }
+        }
 
-// Load the count automatically when the browser opens
-fetchCounter();
-
+        // Load the count automatically when the browser opens
+        fetchCounter();
     </script>
 </body>
 </html>
+ 
